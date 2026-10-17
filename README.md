@@ -34,6 +34,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | 8 Scrambling + attack | `python 06_scramble.py --model conch` | CPU, a few minutes |
 | 9 Noise / direction removal | `python 07_remove.py --model conch` | CPU, a few minutes |
 | 10 Heatmaps | `python 09_heatmaps.py --model conch` | CPU, a minute |
+| Test 2, learned | `python 10_linkage.py --model conch` (and `--split site`) | CPU, a few minutes |
 | 11 Scorecard | `python 08_scorecard.py` | CPU |
 
 For steps 6–10, run the commands once each for `--model` `conch`, `musk` and `pathgen` (plus `quilt` and `plip` if you embedded them). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
@@ -57,6 +58,7 @@ For steps 6–10, run the commands once each for `--model` `conch`, `musk` and `
   - PCA + Procrustes, an extra I added. A rotation only rotates the principal axes, so after PCA only a few dimensions need aligning. That should take fewer known pairs, but it only clearly helped on Test 1 with synthetic data. On real data, compare the two curves before picking the stronger one.
 
   Every attack is scored only on patients the attacker does not know. The script also reports a "hospital reuses the same key" case, which is mathematically identical to no scrambling at all.
+- **Test 2 as a learned-alignment attack (`10_linkage.py`).** On 200 real patients, plain cosine between a report and its slide was at chance for PathGen-CLIP and QuiltNet. The realistic attacker has public paired data (e.g. TCGA) embedded with the same public model, so they fit a report→slide map (orthogonal Procrustes or ridge) on those patients and re-identify a disjoint set. The test patients are fixed per split, so chance does not change with training size. Every learned method has a **shuffled-pairs control** (pairs shuffled within diagnosis: disease-level alignment survives, identity does not); beating it is the evidence that the map matches people. `--split site` puts training and test patients at different hospitals; `--split project` trains on one cancer type and tests on the other.
 - **The attack curve can exceed the no-scrambling line.** Procrustes fitted on known pairs is effectively a learned image-text alignment, so it can beat raw cosine. That isn't a bug, and it's worth a sentence in the deck.
 - **Fingerprint removal (`07_remove.py`).** `--removal mean` is the plan's method: take each patient's mean, subtract the diagnosis mean, run PCA. `--removal xcov` is an alternative that targets the directions where a patient's two views agree. Utility is 5-fold logistic regression balanced accuracy, with one slide per patient, so folds split cleanly by patient. **Sweet spot:** the highest-utility setting where both Test 1 and Test 2 are ≤ `--max-lift` (default 2) × chance.
 

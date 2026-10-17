@@ -3,6 +3,7 @@ a fake slide, then steps 05-09 on synthetic embeddings with a planted patient fi
 
     python tests/smoke_test.py
 """
+import json
 import os
 import subprocess
 import sys
@@ -178,6 +179,28 @@ def make_tiles(tmp: Path, n_patients=40, n_tiles=24, d=128, seed=1):
     np.savez(emb / "slides.npz", slide_ids=np.array(ids), X=np.stack([slides[s] for s in ids]))
 
 
+def check_linkage(tmp: Path, env):
+    """Reports in a rotated space: zero-shot cosine fails, a map learned on other patients recovers them,
+    and the same map trained on shuffled pairs does not."""
+    emb = tmp / "emb" / "conch"
+    z = np.load(emb / "reports.npz")
+    rot = np.linalg.qr(np.random.default_rng(7).normal(size=(z["X"].shape[1],) * 2))[0]
+    np.savez(emb / "reports_rot.npz", patient_ids=z["patient_ids"], X=(z["X"] @ rot).astype(np.float32))
+    print(run("10_linkage.py", env, "--reports-name", "reports_rot", "--seeds", "3", "--grid", "0", "20", "60", "120"))
+    t2 = json.loads((tmp / "results/conch/linkage.json").read_text())["tests"]["test2"]
+    cur = t2["curves"]
+    assert cur["cosine"]["all"]["lift_mean"][-1] < 3, "rotated reports: zero-shot cosine should be near chance"
+    best = max(("procrustes", "ridge"), key=lambda m: cur[m]["all"]["lift_mean"][-1])
+    assert cur[best]["all"]["lift_mean"][-1] > 3, "a map learned on disjoint patients should recover the link"
+    assert cur[best]["all"]["top1_mean"][-1] > 2 * cur[best + ", shuffled pairs"]["all"]["top1_mean"][-1], \
+        "shuffled pairs must not teach identity"
+    assert cur[best]["all"]["lift_mean"][-1] > cur[best]["all"]["lift_mean"][1], "more training pairs should help"
+    run("10_linkage.py", env, "--reports-name", "reports_rot", "--seeds", "2", "--grid", "0", "60", "--split", "site")
+    assert (tmp / "results/conch/linkage_site.json").exists()
+    # Keep linkage.png for the default reports too, as on Delta.
+    run("10_linkage.py", env, "--seeds", "2", "--grid", "0", "60")
+
+
 def run(script, env, *args):
     r = subprocess.run([sys.executable, str(REPO / script), "--model", "conch", *args] if script != "08_scorecard.py"
                        else [sys.executable, str(REPO / script)], env=env, capture_output=True, text=True)
@@ -227,8 +250,10 @@ def main():
         assert noise[-1]["test2_all_top1"] < noise[0]["test2_all_top1"], "noise should cut matching"
         assert noise[0]["utility"] > 0.9, "clean embeddings should classify the planted diagnosis"
 
+        check_linkage(tmp, env)
+
         print(run("08_scorecard.py", env))
-        for f in ("scramble.png", "removal_noise.png", "removal_remove.png", "tradeoff.png"):
+        for f in ("scramble.png", "removal_noise.png", "removal_remove.png", "tradeoff.png", "linkage.png"):
             assert (tmp / "results/conch" / f).stat().st_size > 10_000, f
 
         make_tiles(tmp)

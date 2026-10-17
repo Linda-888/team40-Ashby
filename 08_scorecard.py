@@ -1,6 +1,6 @@
 """Step 11 helper: collect every model's results into one privacy scorecard (Markdown + CSV).
 
-    python 08_scorecard.py            # after 05/06/07 ran for each model
+    python 08_scorecard.py            # after 05/06/07 (and 10) ran for each model
 """
 import json
 
@@ -18,6 +18,15 @@ def rate(s):
     if not s or not s.get("n_queries"):
         return "n/a"
     return f"{s['top1']:.1%} vs {s['chance_top1']:.1%} chance (n={s['n_queries']})"
+
+
+def linkage(r):
+    """Best learned map at the largest training size, against chance and its shuffled-pairs control."""
+    i = max(j for j, t in enumerate(r["curves"]["cosine"]["all"]["top1_mean"]) if t == t)  # last non-NaN
+    best = max(("procrustes", "ridge"), key=lambda m: r["curves"][m]["all"]["lift_mean"][i])
+    cur, ctrl = r["curves"][best]["all"], r["curves"][best + ", shuffled pairs"]["all"]
+    return (f"{cur['top1_mean'][i]:.1%} vs {cur['chance_mean'][i]:.1%} chance (x{cur['lift_mean'][i]:.1f}) "
+            f"with {r['grid'][i]} training pairs ({best}); shuffled-pairs control x{ctrl['lift_mean'][i]:.1f}")
 
 
 def to_markdown(df):
@@ -50,6 +59,10 @@ def main():
                     row[f"key scrambling, {name}"] = f"broken with {broken[a]} known pairs ({a})"
                 else:
                     row[f"key scrambling, {name}"] = f"survives up to k={max(r['ks'])}"
+        for split in ("", "_site"):
+            r = load(m, f"linkage{split}").get("tests", {}).get("test2")
+            if r:
+                row[f"learned linkage, report-to-slide{split.replace('_', ' (') + ')' if split else ''}"] = linkage(r)
         for method in ("noise", "remove"):
             res = rm.get("methods", {}).get(method)
             if res:
