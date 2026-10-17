@@ -25,7 +25,10 @@ CONCH and MUSK are not run yet (Hugging Face access pending).
 git clone git@github.com:Linda-888/team40-Ashby.git /work/nvme/bfqi/$USER/tissue-fingerprints/code
 ```
 
-The repo is private: clone with your own GitHub access (or a read-only deploy key, as set up for `lhuang17`).
+The repo is private: clone with your own GitHub access. On `lhuang17`'s Delta account there are two
+deploy keys for this repo only: `~/.ssh/tf_deploy` (read-only, used for pulls) and `~/.ssh/tf_deploy_rw`
+(write, used only by `sync_results.sh` to push `results/`). Remove the write key in GitHub's
+Settings → Deploy keys when the hackathon is over.
 Log in through Open OnDemand (Clusters → Delta Shell Access).
 
 ## Run order
@@ -47,6 +50,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | Test 2, learned | `python 10_linkage.py --model conch` (and `--split site`) | CPU, a few minutes |
 | Deck figures | `python 11_figures.py` (after the steps above, all models at once) | CPU, seconds |
 | 11 Scorecard | `python 08_scorecard.py` | CPU |
+| Freeze to GitHub | `bash sync_results.sh` (after 08 and 11) | login node |
 
 For steps 6–10, run the commands once each for every embedded model (`pathgen`, `quilt`, `plip`, and later `conch`, `musk`). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
 
@@ -88,6 +92,7 @@ $TF_ROOT/emb/<model>/slides.npz, reports.npz
 $TF_ROOT/results/<model>/*.json, *.png     steps 6–10 (tests, scramble, removal, linkage[_site], heatmaps)
 $TF_ROOT/results/scorecard.md              step 11
 $TF_ROOT/results/figures/                  deck figures + key_numbers.md (11_figures.py)
+code/results/  (in this repo)              lean copy pushed by sync_results.sh: figures, JSON, summary plots
 ```
 
 ## What has actually run
