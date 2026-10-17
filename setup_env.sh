@@ -26,7 +26,8 @@ install_main() {
     # CONCH + PathGen-CLIP + OpenSlide + analysis.
     [ -d "$TF_ENVS/tf-main" ] || conda create -y -p "$TF_ENVS/tf-main" python=3.10
     conda activate "$TF_ENVS/tf-main"
-    pip install torch==2.4.1 torchvision==0.19.1 --index-url https://download.pytorch.org/whl/cu121
+    # torch >= 2.6: transformers refuses to load .bin checkpoints (e.g. PLIP) on older torch (CVE-2025-32434)
+    pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
     pip install "timm>=0.9.8,<1.0" "transformers<5" tokenizers open_clip_torch \
         openslide-python openslide-bin scikit-learn scipy pandas matplotlib pillow tqdm \
         huggingface_hub ftfy regex h5py ipykernel
