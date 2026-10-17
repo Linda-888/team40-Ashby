@@ -50,7 +50,7 @@ install_musk() {
 
 download_weights() {
     conda activate "$TF_ENVS/tf-main"
-    # CONCH and MUSK are gated. Skipped when config.sh points at the organizers' pre-loaded copies;
+    # CONCH and MUSK are gated. Skipped when config.sh points at local copies (none were pre-loaded on 10/17);
     # otherwise request access on Hugging Face first. Your token stays in your home dir (HF_TOKEN_PATH).
     python - <<'EOF'
 import os
