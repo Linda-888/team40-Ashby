@@ -251,6 +251,11 @@ def main():
         assert noise[0]["utility"] > 0.9, "clean embeddings should classify the planted diagnosis"
 
         check_linkage(tmp, env)
+        out = subprocess.run([sys.executable, str(REPO / "11_figures.py")], env=env, capture_output=True, text=True)
+        assert out.returncode == 0, out.stderr
+        for f in ("fig1_ladder", "fig2_test2", "fig3_scorecard", "fig4_linkage", "fig5_defenses", "fig6_scrambling"):
+            assert (tmp / "results/figures" / f"{f}.png").stat().st_size > 30_000, f
+        assert "Across models" in (tmp / "results/figures/key_numbers.md").read_text()
 
         print(run("08_scorecard.py", env))
         for f in ("scramble.png", "removal_noise.png", "removal_remove.png", "tradeoff.png", "linkage.png"):

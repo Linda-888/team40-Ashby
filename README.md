@@ -35,6 +35,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | 9 Noise / direction removal | `python 07_remove.py --model conch` | CPU, a few minutes |
 | 10 Heatmaps | `python 09_heatmaps.py --model conch` | CPU, a minute |
 | Test 2, learned | `python 10_linkage.py --model conch` (and `--split site`) | CPU, a few minutes |
+| Deck figures | `python 11_figures.py` (after the steps above, all models at once) | CPU, seconds |
 | 11 Scorecard | `python 08_scorecard.py` | CPU |
 
 For steps 6–10, run the commands once each for `--model` `conch`, `musk` and `pathgen` (plus `quilt` and `plip` if you embedded them). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
