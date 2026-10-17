@@ -95,8 +95,9 @@ def main():
             mean_all = np.array(res["curves"][a]["all"]["mean"])
             # Smallest k where the attack gets back half of what is above chance on the same patients.
             gain = (mean_all - chance_k) / np.maximum(clear_k - chance_k, 1e-9)
+            # Only meaningful where no scrambling is clearly above chance (2x) on those patients.
             res["k_to_half"][a] = next((k for k, g, cl, ch in zip(ks, gain, clear_k, chance_k)
-                                        if g >= 0.5 and cl > ch), None)
+                                        if g >= 0.5 and cl >= 2 * ch), None)
             print(f"{name}: different keys + {a} (top-1, all): "
                   + ", ".join(f"k={k}: {m:.3f}" for k, m in zip(ks, mean_all)))
             print(f"{name}:   known pairs to recover half of the above-chance match rate: {res['k_to_half'][a]}")

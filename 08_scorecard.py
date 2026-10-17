@@ -52,7 +52,10 @@ def main():
         }
         for name in ("test1", "test2"):
             r = sc.get("tests", {}).get(name)
-            if r:
+            clear = t.get(name, {}).get("all", {})
+            if r and clear.get("p_value", 1) > 0.05:  # nothing to protect, so nothing to "break"
+                row[f"key scrambling, {name}"] = "n/a: no clear-text signal (see learned linkage)"
+            elif r:
                 broken = {a: k for a, k in r["k_to_half"].items() if k is not None}
                 if broken:
                     a = min(broken, key=broken.get)
