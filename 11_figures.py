@@ -233,8 +233,8 @@ def fig_scorecard(res, dst):
             ax.text(j, i, txt, ha="center", va="center", fontsize=8)
     ax.set_xticks(range(len(models)), [LABEL[m] for m in models])
     ax.set_yticks(range(len(labels)), labels)
-    fig.text(0.01, 0.005, "Same-hospital rows rank ~10 candidates, so their ceiling is ~6x: 1.7x there with p<0.001 is "
-             "a real leak. Color = x chance only; read the p-values.", fontsize=7, color="dimgray")
+    fig.text(0.01, 0.005, "Same-hospital rows rank only a few candidates, so even a perfect attack scores a low 'x chance' "
+             "there. Color shows x chance only; judge those rows by their p-values.", fontsize=7, color="dimgray")
     ax.tick_params(length=0)
     for s in ax.spines.values():
         s.set_visible(False)
