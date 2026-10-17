@@ -62,11 +62,18 @@ def offsets(n, width=0.7):
     return [(j - (n - 1) / 2) * width / max(n, 1) for j in range(n)]
 
 
-def log_y(ax, values, lo=0.5):
+FLOOR = 0.3  # 0x cannot sit on a log axis; plot it at the floor, label it with the true value
+
+
+def clip(v):
+    return v if v != v else max(v, FLOOR)
+
+
+def log_y(ax, values, lo=0.25):
     vals = finite(values) or [1.0]
     ax.set_yscale("log")
     ax.set_ylim(lo, max(2.0, max(vals) * 1.6))
-    ticks = [t for t in (0.5, 1, 2, 5, 10, 20, 50) if lo <= t <= max(2.0, max(vals) * 1.6)]
+    ticks = [t for t in (0.3, 1, 2, 5, 10, 20, 50) if lo <= t <= max(2.0, max(vals) * 1.6)]
     ax.set_yticks(ticks, [f"{t:g}x" for t in ticks])
     ax.axhline(1, color="gray", ls="--", lw=1)
 
@@ -106,8 +113,9 @@ def fig_ladder(res, dst):
                     continue
                 lo, hi = lift_ci(s)
                 x = i + offsets(len(models))[j]
-                ax.errorbar(x, v, yerr=[[v - lo], [hi - v]], fmt="o", color=COLOR[m], ms=7, capsize=3,
-                            label=LABEL[m] if i == 0 else None)
+                vp, lo, hi = clip(v), clip(lo), clip(hi)
+                ax.errorbar(x, vp, yerr=[[max(vp - lo, 0)], [max(hi - vp, 0)]], fmt="o", color=COLOR[m], ms=7,
+                            capsize=3, label=LABEL[m] if i == 0 else None)
                 ax.annotate(f"{v:.1f}x", (x, hi), xytext=(0, 3), textcoords="offset points", ha="center", fontsize=7)
                 allv.append(hi)
         ax.set_xticks(range(len(controls)), [lab for _, lab in controls])
@@ -141,10 +149,11 @@ def fig_test2(res, dst):
                 linkage_lift(link, meth, "dx+site", i)[0],
                 linkage_lift(link, meth + ", shuffled pairs", "all", i)[0]]
         xs = [k + offsets(len(models))[j] for k in range(len(cats))]
-        ax.scatter(xs, vals, color=COLOR[m], s=55, zorder=3, label=f"{LABEL[m]} ({meth}, {link['tests']['test2']['grid'][i]} pairs)")
+        ax.scatter(xs, [clip(v) for v in vals], color=COLOR[m], s=55, zorder=3, label=f"{LABEL[m]} ({meth}, {link['tests']['test2']['grid'][i]} pairs)")
         for x, v in zip(xs, vals):
             if v == v:
-                ax.annotate(f"{v:.1f}x", (x, v), xytext=(0, 6), textcoords="offset points", ha="center", fontsize=7)
+                ax.annotate(f"{v:.1f}x", (x, clip(v)), xytext=(0, 6), textcoords="offset points", ha="center",
+                            fontsize=7)
         allv += vals
     ax.axvspan(-0.5, 0.5, color=T1, alpha=0.07)
     ax.axvspan(0.5, len(cats) - 0.5, color=T2, alpha=0.07)
