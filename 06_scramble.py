@@ -3,7 +3,8 @@
 For each test, the query side and the candidate side get different random rotations. The attacker
 learns k true pairs, fits the rotation, and we score re-identification on the remaining patients.
 Two attacks: plain Procrustes (the plan), and PCA-per-release + Procrustes, which needs far fewer
-pairs because PCA coordinates do not change under a rotation.
+pairs because PCA coordinates do not change under a rotation. Each k is compared with no scrambling
+on the same n-k patients, since the candidate pool (and so the chance level) shrinks as k grows.
     python 06_scramble.py --model conch
 Writes results/<model>/scramble.json and scramble.png (match rate vs number of known pairs).
 """
@@ -21,6 +22,7 @@ from fingerprints.defenses import procrustes_attack, random_rotation  # noqa: E4
 from fingerprints.matching import allowed_mask, fmt, ranks_of_truth, summarize  # noqa: E402
 
 PLOT_CONTROLS = ("all", "dx+site")
+CLEAR = "no scrambling"
 
 
 def score(Q, C, meta, control):
@@ -58,53 +60,65 @@ def main():
         print(f"\n{name}: clear       {fmt(res['clear']['all'])}")
         print(f"{name}: same key    {fmt(res['same_key']['all'])}")
 
-        runs = {a: {c: [] for c in PLOT_CONTROLS} for a in attacks}  # [seed][k] -> summary
+        # "no scrambling" is scored on the same n-k patients as each attack: fewer candidates means a
+        # higher chance level, so comparing against the full-set baseline would flatter the attack.
+        runs = {a: {c: [] for c in PLOT_CONTROLS} for a in [CLEAR, *attacks]}  # [seed][k] -> summary
         for seed in range(args.seeds):
             rng = np.random.default_rng(1000 + seed)
             Qr, Cr = Q @ random_rotation(d, rng), C @ random_rotation(d, rng)
             perm = rng.permutation(n)
-            for a in attacks:
+            for a in runs:
                 for c in PLOT_CONTROLS:
                     runs[a][c].append([])
             for k in ks:
                 known, rest = perm[:k], perm[k:]  # score only patients the attacker didn't know
                 meta_rest = meta.iloc[rest].reset_index(drop=True)
+                for c in PLOT_CONTROLS:
+                    runs[CLEAR][c][-1].append(score(Q[rest], C[rest], meta_rest, c))
                 for a, dims in attacks.items():
                     Qhat, Chat = procrustes_attack(Qr, Cr, known, pca_dims=min(dims, d))
                     for c in PLOT_CONTROLS:
                         runs[a][c][-1].append(score(Qhat[rest], Chat[rest], meta_rest, c))
 
-        half = 0.5 * res["clear"]["all"]["top1"]
-        for a in attacks:
+        for a in runs:
             res["curves"][a] = {}
             for c in PLOT_CONTROLS:
                 top1 = np.array([[s.get("top1", np.nan) for s in run] for run in runs[a][c]])
                 chance = np.array([[s.get("chance_top1", np.nan) for s in run] for run in runs[a][c]])
                 res["curves"][a][c] = {"mean": np.nanmean(top1, 0).tolist(), "sd": np.nanstd(top1, 0).tolist(),
-                                       "chance": float(np.nanmean(chance))}
-            mean_all = res["curves"][a]["all"]["mean"]
-            # Smallest k that recovers half of the clear-text match rate.
-            res["k_to_half"][a] = next((k for k, m in zip(ks, mean_all) if m >= half), None)
-            line = ", ".join(f"k={k}: {m:.3f}" for k, m in zip(ks, mean_all))
-            print(f"{name}: different keys + {a} (top-1, all): {line}")
-            print(f"{name}:   known pairs to recover half the clear match rate: {res['k_to_half'][a]}")
+                                       "chance": np.nanmean(chance, 0).tolist()}
+        clear_k = np.array(res["curves"][CLEAR]["all"]["mean"])
+        chance_k = np.array(res["curves"][CLEAR]["all"]["chance"])
+        print(f"{name}: no scrambling, same n-k patients: "
+              + ", ".join(f"k={k}: {m:.3f}" for k, m in zip(ks, clear_k)))
+        for a in attacks:
+            mean_all = np.array(res["curves"][a]["all"]["mean"])
+            # Smallest k where the attack gets back half of what is above chance on the same patients.
+            gain = (mean_all - chance_k) / np.maximum(clear_k - chance_k, 1e-9)
+            res["k_to_half"][a] = next((k for k, g, cl, ch in zip(ks, gain, clear_k, chance_k)
+                                        if g >= 0.5 and cl > ch), None)
+            print(f"{name}: different keys + {a} (top-1, all): "
+                  + ", ".join(f"k={k}: {m:.3f}" for k, m in zip(ks, mean_all)))
+            print(f"{name}:   known pairs to recover half of the above-chance match rate: {res['k_to_half'][a]}")
         out["tests"][name] = res
 
     dst = paths.results_dir(args.model) / "scramble.json"
     dst.write_text(json.dumps(out, indent=2))
 
     fig, axes = plt.subplots(1, len(PLOT_CONTROLS), figsize=(6.5 * len(PLOT_CONTROLS), 4.5), squeeze=False)
-    styles = ["-.", "-"]
+    styles = {CLEAR: "--", **dict(zip(attacks, ["-.", "-"]))}
     for ax, c in zip(axes[0], PLOT_CONTROLS):
         for ti, (name, res) in enumerate(out["tests"].items()):
             color = f"C{ti}"
-            for a, ls in zip(attacks, styles):
+            for a, ls in styles.items():
                 cur = res["curves"][a][c]
                 m, s = np.array(cur["mean"]), np.array(cur["sd"])
-                ax.plot(res["ks"], m, ls=ls, marker="o", ms=3, color=color, label=f"{name}: keys + {a}")
-                ax.fill_between(res["ks"], m - s, m + s, color=color, alpha=0.15)
-            ax.axhline(res["clear"][c]["top1"], color=color, ls="--", lw=1, label=f"{name}: no scrambling")
-            ax.axhline(res["curves"][a][c]["chance"], color=color, ls=":", lw=1, label=f"{name}: chance")
+                label = f"{name}: {a}" if a == CLEAR else f"{name}: keys + {a}"
+                ax.plot(res["ks"], m, ls=ls, marker="o", ms=3, color=color, label=label)
+                if a != CLEAR:
+                    ax.fill_between(res["ks"], m - s, m + s, color=color, alpha=0.15)
+            ax.plot(res["ks"], res["curves"][CLEAR][c]["chance"], color=color, ls=":", lw=1,
+                    label=f"{name}: chance")
         ax.set_xlabel("known true pairs (k)")
         ax.set_ylabel("top-1 match rate")
         ax.set_title(f"{args.model}: candidates = {c}")

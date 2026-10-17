@@ -3,6 +3,11 @@
 At each strength: Test 1 and Test 2 match rates (privacy) and subtype classifier balanced
 accuracy (utility). A fix only counts if it blocks BOTH tests. The sweet spot is the strength
 with the best utility among those where both tests are at most --max-lift x chance.
+
+Cross-fitted: patients are split into two halves (balanced by diagnosis). Identity directions are
+fit on one half and the defense is scored on the other, then the halves swap and results average.
+Fitting and scoring on the same patients would let a k >= n removal erase every in-sample fingerprint
+trivially, and would leak the diagnosis labels used for fitting into the classifier's CV.
     python 07_remove.py --model conch
 Writes results/<model>/removal.json, removal_<method>.png, tradeoff.png.
 """
@@ -22,12 +27,25 @@ from fingerprints.matching import test1, test2  # noqa: E402
 PRIVACY_CONTROL = "all"  # the realistic attacker ranks against the whole release
 
 
-def defended(e, method, strength, rng, removal):
+def halves(e, seed=0):
+    """Fold id (0/1) per patient, balanced by diagnosis."""
+    rng = np.random.default_rng(seed)
+    dx = e.patients.diagnosis.astype(str).to_numpy()
+    fold = np.zeros(e.n, int)
+    for g in np.unique(dx):
+        idx = np.flatnonzero(dx == g)
+        rng.shuffle(idx)
+        fold[idx[1::2]] = 1
+    return fold
+
+
+def defended(fit, test, method, strength, rng, removal):
+    """The defense applied to the `test` patients; removal directions come from the `fit` patients."""
     if method == "noise":
-        return e.with_(A=add_noise(e.A, strength, rng), B=add_noise(e.B, strength, rng),
-                       R=add_noise(e.R, strength, rng))
-    U = identity_directions(e, int(strength), removal)
-    return e.with_(A=project_out(e.A, U), B=project_out(e.B, U), R=project_out(e.R, U))
+        return test.with_(A=add_noise(test.A, strength, rng), B=add_noise(test.B, strength, rng),
+                          R=add_noise(test.R, strength, rng))
+    U = identity_directions(fit, int(strength), removal)
+    return test.with_(A=project_out(test.A, U), B=project_out(test.B, U), R=project_out(test.R, U))
 
 
 def evaluate(e2, labels):
@@ -59,15 +77,20 @@ def main():
     if len(np.unique(labels)) < 2:
         print("warning: one diagnosis only, so utility is n/a. Use 2+ projects (e.g. LUAD + LUSC) "
               "or pass --clinical to 01_pick_patients.py")
-    grids = {"noise": args.sigmas, "remove": [k for k in args.ks if k < e.d]}
+    fold = halves(e)
+    parts = [(e.subset(fold != h), e.subset(fold == h)) for h in (0, 1)]  # (fit, test)
+    n_fit = min(len(f.patients) for f, _ in parts)
+    print(f"cross-fitted on two halves of {e.n} patients (each scored on ~{e.n // 2}, so chance is higher)")
+    grids = {"noise": args.sigmas, "remove": [k for k in args.ks if k < e.d and k <= n_fit]}
 
     out = {"model": args.model, "removal_method": args.removal, "max_lift": args.max_lift, "methods": {}}
     for method, grid in grids.items():
         rows = []
         for strength in grid:
             reps = args.noise_seeds if method == "noise" and strength > 0 else 1
-            runs = [evaluate(defended(e, method, strength, np.random.default_rng(s), args.removal), labels)
-                    for s in range(reps)]
+            runs = [evaluate(defended(fit, test, method, strength, np.random.default_rng(10 * s + h), args.removal),
+                             test.patients.diagnosis.astype(str).to_numpy())
+                    for s in range(reps) for h, (fit, test) in enumerate(parts)]
             row = {k: float(np.nanmean([r.get(k, np.nan) for r in runs])) for k in runs[0]}
             row["strength"] = strength
             rows.append(row)

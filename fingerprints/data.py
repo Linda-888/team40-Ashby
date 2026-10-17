@@ -30,6 +30,11 @@ class Embeddings:
         """Same patients, transformed embeddings (for defenses)."""
         return replace(self, **arrays)
 
+    def subset(self, mask) -> "Embeddings":
+        m = np.asarray(mask, bool)
+        return Embeddings(self.patients[m].reset_index(drop=True), self.A[m], self.B[m], self.R[m],
+                          self.has_B[m], self.has_R[m])
+
 
 def _lookup(npz_path, id_key):
     z = np.load(npz_path)

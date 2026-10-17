@@ -214,7 +214,8 @@ def main():
         sc = json.loads((tmp / "results/conch/scramble.json").read_text())["tests"]["test2"]
         assert sc["same_key"]["all"]["top1"] == sc["clear"]["all"]["top1"], "same key changes nothing"
         plain, pca = (sc["curves"][a]["all"] for a in ("procrustes", "pca16+procrustes"))
-        assert plain["mean"][0] < 3 * plain["chance"], "different keys should drop to ~chance"
+        assert plain["mean"][0] < 3 * plain["chance"][0], "different keys should drop to ~chance"
+        assert len(sc["curves"]["no scrambling"]["all"]["mean"]) == len(sc["ks"]), "same-subset baseline"
         assert plain["mean"][-1] > 0.5 * sc["clear"]["all"]["top1"], "Procrustes should break it"
         assert pca["mean"][2] > plain["mean"][2], "PCA + Procrustes should need fewer pairs"
 
