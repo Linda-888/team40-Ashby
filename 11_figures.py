@@ -173,9 +173,15 @@ def fig_test2(res, dst):
 def scorecard_rows(r):
     """(label, x-chance value, note) rows for one model."""
     t, rows = r["tests"], []
-    rows.append(("Test 1  slide -> slide", lift(t["test1"].get("all")), ""))
-    rows.append(("Test 1  same hospital", lift(t["test1"].get("dx+site")), ""))
-    rows.append(("Test 2  report -> slide, zero-shot", lift(t["test2"].get("all")), ""))
+
+    def pnote(s):
+        if not s or not s.get("n_queries"):
+            return ""
+        return "p<0.001" if s["p_value"] < 0.001 else f"p={s['p_value']:.3f}"
+    for lab, test, c in (("Test 1  slide -> slide", "test1", "all"), ("Test 1  same hospital", "test1", "dx+site"),
+                         ("Test 2  report -> slide, zero-shot", "test2", "all")):
+        s = t[test].get(c)
+        rows.append((lab, lift(s), pnote(s)))
     if "linkage" in r:
         meth, i = best_learned(r["linkage"])
         v, n = linkage_lift(r["linkage"], meth, "all", i)
@@ -227,6 +233,8 @@ def fig_scorecard(res, dst):
             ax.text(j, i, txt, ha="center", va="center", fontsize=8)
     ax.set_xticks(range(len(models)), [LABEL[m] for m in models])
     ax.set_yticks(range(len(labels)), labels)
+    fig.text(0.01, 0.005, "Same-hospital rows rank ~10 candidates, so their ceiling is ~6x: 1.7x there with p<0.001 is "
+             "a real leak. Color = x chance only; read the p-values.", fontsize=7, color="dimgray")
     ax.tick_params(length=0)
     for s in ax.spines.values():
         s.set_visible(False)
