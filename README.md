@@ -3,8 +3,8 @@
 Code for every step of the plan, 1 through 11 (heatmaps and the scorecard included).
 
 **Status (10/17):** ran end to end on Delta for 200 TCGA lung cancer patients (LUAD + LUSC) with
-PathGen-CLIP, QuiltNet and PLIP. The results and the story are in [STORY.md](STORY.md).
-CONCH and MUSK are not run yet (Hugging Face access pending).
+MUSK, PathGen-CLIP, QuiltNet and PLIP. The results and the story are in [STORY.md](STORY.md).
+CONCH is not run yet (Hugging Face access pending). MUSK uses Saanvi's copy of the weights (`config.sh`).
 
 ## What is on Delta (checked 10/17)
 
@@ -66,7 +66,7 @@ For steps 6–10, run the commands once each for every embedded model (`pathgen`
   TS and BS slides of the same frozen piece count as one specimen and are never paired together (`fingerprints/barcodes.py`).
 - **Diagnosis.** Defaults to the TCGA project, so picking LUAD + LUSC gives the subtype classifier free labels. Passing `--clinical clinical.tsv` (exported from GDC) switches to primary_diagnosis instead.
 - **Embedding space.** Every model uses its projected image-text shared space (CONCH `proj_contrast=True`, MUSK `with_head=True`, CLIP-style `encode_image` for the others), because Test 2 compares images and text directly.
-- **Five models supported, three run.** The plan's three (CONCH, MUSK, PathGen-CLIP), plus QuiltNet-B-32 and PLIP from the hackathon's model list. PathGen-CLIP, QuiltNet and PLIP are ungated and have been run; CONCH and MUSK wait on access.
+- **Five models supported, four run.** The plan's three (CONCH, MUSK, PathGen-CLIP), plus QuiltNet-B-32 and PLIP from the hackathon's model list. MUSK, PathGen-CLIP, QuiltNet and PLIP have been run; CONCH waits on access.
 - **Two conda envs.** MUSK pins torch 2.0.1 / timm 0.9.8 and conflicts with CONCH. `tf-main` holds CONCH, PathGen, OpenSlide and all the analysis code; `tf-musk` holds only MUSK.
 - **Fairness controls.** `05_tests.py` reports all four candidate sets: `all`, `site`, `dx`, `dx+site`. The plan's headline was Test 2 `dx+site`; on real data it is at chance, so the headline is now Test 1 (see STORY.md). Each result includes chance, a Wilson 95% CI, and a p-value from simulating random guessing.
 - **Scrambling attack (`06_scramble.py`).** Test 1 and Test 2 each get two independent rotations. The script runs two attacks:
@@ -99,9 +99,10 @@ code/results/  (in this repo)              lean copy pushed by sync_results.sh: 
 ## What has actually run
 
 - **On Delta with real data (200 patients):** `setup_env.sh`, `tcga_download.py`, `01_pick_patients.py`,
-  `slurm/pipeline_gpu.sbatch` (tiling + embedding), `05`–`11`, for PathGen-CLIP, QuiltNet and PLIP.
-- **Never run on Delta:** `slurm/check_models.sbatch`, `slurm/tile.sbatch`, `slurm/embed.sbatch` (`pipeline_gpu.sbatch`
-  replaced them), and anything with CONCH or MUSK.
+  `slurm/pipeline_gpu.sbatch` (tiling + embedding), `05`–`11`, for PathGen-CLIP, QuiltNet and PLIP; for MUSK,
+  `slurm/embed.sbatch` (`--array=1`, on A100) and `slurm/analyze.sbatch`.
+- **Never run on Delta:** `slurm/check_models.sbatch`, `slurm/tile.sbatch` (`pipeline_gpu.sbatch` replaced them),
+  and anything with CONCH.
 - **Synthetic only:** `python tests/smoke_test.py` (barcodes, pairing, chunking, tiling on a fake slide, steps 05–11
   on synthetic embeddings). Its numbers are not results.
 - **Caveat:** the Test 2 rows of the heatmap summaries are noise, because Test 2 itself is at chance. Use only Test 1 heatmaps.
