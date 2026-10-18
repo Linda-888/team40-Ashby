@@ -2,16 +2,31 @@
 
 ## Across models (x chance)
 
-- Test 1 slide -> slide: 13.0x to 17.0x  (PathGen-CLIP 13.0x, QuiltNet 17.0x, PLIP 14.0x)
-- Test 1 same hospital: 1.6x to 1.8x  (PathGen-CLIP 1.8x, QuiltNet 1.7x, PLIP 1.6x)
-- Test 2 report -> slide, zero-shot: 0.0x to 1.0x  (PathGen-CLIP 1.0x, QuiltNet 1.0x, PLIP 0.0x)
-- Test 2 learned map: 5.3x to 7.3x  (PathGen-CLIP 7.3x, QuiltNet 5.3x, PLIP 6.3x)
-- Test 2 learned map, unseen hospitals: 1.0x to 2.4x  (PathGen-CLIP 2.4x, QuiltNet 1.0x, PLIP 1.8x)
-- Test 2 learned map, same hospital: 1.0x to 1.1x  (PathGen-CLIP 1.1x, QuiltNet 1.0x, PLIP 1.0x)
-- Test 1 scrambled, 0 known pairs: 1.2x to 1.2x  (PathGen-CLIP 1.2x, QuiltNet 1.2x, PLIP 1.2x)
-- Test 1 scrambled, 50 known pairs: 5.6x to 7.2x  (PathGen-CLIP 7.2x, QuiltNet 5.6x, PLIP 5.8x)
-- Test 1 after noise: 1.5x to 1.8x  (PathGen-CLIP 1.5x, QuiltNet 1.7x, PLIP 1.8x)
-- Test 1 after removing identity dirs: 8.5x to 9.5x  (PathGen-CLIP 9.5x, QuiltNet 8.5x, PLIP 8.5x)
+- Test 1 slide -> slide: 13.0x to 17.0x  (MUSK 15.0x, PathGen-CLIP 13.0x, QuiltNet 17.0x, PLIP 14.0x)
+- Test 1 same hospital: 1.6x to 2.0x  (MUSK 2.0x, PathGen-CLIP 1.8x, QuiltNet 1.7x, PLIP 1.6x)
+- Test 2 report -> slide, zero-shot: 0.0x to 1.0x  (MUSK 1.0x, PathGen-CLIP 1.0x, QuiltNet 1.0x, PLIP 0.0x)
+- Test 2 learned map: 5.3x to 7.3x  (MUSK 6.3x, PathGen-CLIP 7.3x, QuiltNet 5.3x, PLIP 6.3x)
+- Test 2 learned map, unseen hospitals: 0.8x to 2.4x  (MUSK 0.8x, PathGen-CLIP 2.4x, QuiltNet 1.0x, PLIP 1.8x)
+- Test 2 learned map, same hospital: 1.0x to 1.1x  (MUSK 1.1x, PathGen-CLIP 1.1x, QuiltNet 1.0x, PLIP 1.0x)
+- Test 1 scrambled, 0 known pairs: 1.2x to 1.4x  (MUSK 1.4x, PathGen-CLIP 1.2x, QuiltNet 1.2x, PLIP 1.2x)
+- Test 1 scrambled, 50 known pairs: 5.6x to 7.6x  (MUSK 7.6x, PathGen-CLIP 7.2x, QuiltNet 5.6x, PLIP 5.8x)
+- Test 1 after noise: 1.3x to 1.8x  (MUSK 1.3x, PathGen-CLIP 1.5x, QuiltNet 1.7x, PLIP 1.8x)
+- Test 1 after removing identity dirs: 8.5x to 9.5x  (MUSK 8.5x, PathGen-CLIP 9.5x, QuiltNet 8.5x, PLIP 8.5x)
+
+## MUSK (200 patients)
+- Test 1 slide -> slide, all: 7.5% vs 0.5% chance (15.0x, 95% CI 4.6%-12.0%, p=0.0005, n=200)
+- Test 1 slide -> slide, same diagnosis: 8.0% vs 1.0% chance (8.0x, 95% CI 5.0%-12.6%, p=0.0005, n=200)
+- Test 1 slide -> slide, same diagnosis + hospital: 34.6% vs 17.0% chance (2.0x, 95% CI 28.1%-41.6%, p=0.0005, n=188)
+- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-2.8%, p=0.6307, n=200)
+- Test 2 report -> slide, zero-shot, same diagnosis: 0.5% vs 1.0% chance (0.5x, 95% CI 0.1%-2.8%, p=0.8611, n=200)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 22.3% vs 17.0% chance (1.3x, 95% CI 17.0%-28.8%, p=0.0305, n=188)
+- Test 2 learned map: 6.3x (120 pairs)
+- Test 2 learned map, unseen hospitals: 0.8x (100 pairs)
+- Test 2 learned map, same hospital: 1.1x
+- Test 1 scrambled, 0 known pairs: 1.4x
+- Test 1 scrambled, 50 known pairs: 7.6x
+- Test 1 after noise: 1.3x (sigma 2, acc 0.78->0.56)
+- Test 1 after removing identity dirs: 8.5x (k=100, acc 0.77)
 
 ## PathGen-CLIP (200 patients)
 - Test 1 slide -> slide, all: 6.5% vs 0.5% chance (13.0x, 95% CI 3.8%-10.8%, p=0.0005, n=200)
