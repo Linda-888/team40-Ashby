@@ -22,5 +22,5 @@ export TF_PATHGEN_CKPT="${TF_ROOT}/weights/pathgenclip.pt"
 # If you find pre-loaded CONCH / MUSK weights on Delta, point these at them (a file or its folder)
 # and no Hugging Face access is needed. (None were in /projects/bfqi/shared as of 10/17.) CONCH wants pytorch_model.bin, MUSK wants model.safetensors.
 # Leave empty to download from Hugging Face instead (needs approved access).
-export TF_CONCH_CKPT=""
+export TF_CONCH_CKPT="/work/nvme/bfqi/sarora/weights/conch/pytorch_model.bin"   # Saanvi's copy, group-readable
 export TF_MUSK_CKPT="/work/nvme/bfqi/sarora/weights/musk/model.safetensors"   # Saanvi's copy, group-readable
