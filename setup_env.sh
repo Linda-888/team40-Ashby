@@ -42,6 +42,8 @@ install_musk() {
     conda activate "$TF_ENVS/tf-musk"
     [ -d "$TF_ROOT/src/MUSK" ] || git clone https://github.com/lilab-stanford/MUSK.git "$TF_ROOT/src/MUSK"
     pip install -r "$TF_ROOT/src/MUSK/requirements.txt"
+    # MUSK pins torch 2.0.1 but leaves transformers unpinned; 5.x needs torch >= 2.6 and changed the tokenizers.
+    pip install "transformers>=4.40,<4.50"
     pip install -e "$TF_ROOT/src/MUSK"
     pip install pandas tqdm scikit-learn scipy matplotlib huggingface_hub ipykernel
     python -m ipykernel install --user --name tf-musk --display-name "tf-musk (MUSK)"
