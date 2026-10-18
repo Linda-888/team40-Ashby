@@ -78,7 +78,7 @@ came from. Slide embeddings should be treated as identifiable data.
 ## Slide order (flash talk)
 
 1. Problem: embeddings are shared as anonymous.
-2. Setup: 200 patients, two specimens each, three models, controls.
+2. Setup: 200 patients, two specimens each, four models, controls.
 3. fig1_ladder: the fingerprint survives every control.
 4. fig2_test2 (+ fig4_linkage as backup): reports leak the hospital only.
 5. fig6_scrambling: secret keys break.
