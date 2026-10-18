@@ -50,6 +50,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | Test 2, learned | `python 10_linkage.py --model conch` (and `--split site`) | CPU, a few minutes |
 | Deck figures | `python 11_figures.py` (after the steps above, all models at once) | CPU, seconds |
 | 11 Scorecard | `python 08_scorecard.py` | CPU |
+| 05–11 as a batch job | `sbatch --export=ALL,MODELS=musk slurm/analyze.sbatch` (use this for 1024-dim models) | A100 node's 16 cores, not the login node |
 | Freeze to GitHub | `bash sync_results.sh` (after 08 and 11) | login node |
 
 For steps 6–10, run the commands once each for every embedded model (`pathgen`, `quilt`, `plip`, and later `conch`, `musk`). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
