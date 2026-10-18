@@ -20,10 +20,19 @@ def rate(s):
     return f"{s['top1']:.1%} vs {s['chance_top1']:.1%} chance (n={s['n_queries']})"
 
 
-def linkage(r):
-    """Best learned map at the largest training size, against chance and its shuffled-pairs control."""
-    i = max(j for j, t in enumerate(r["curves"]["cosine"]["all"]["top1_mean"]) if t == t)  # last non-NaN
-    best = max(("procrustes", "ridge"), key=lambda m: r["curves"][m]["all"]["lift_mean"][i])
+def last_size(r):
+    return max(j for j, t in enumerate(r["curves"]["cosine"]["all"]["top1_mean"]) if t == t)  # last non-NaN
+
+
+def best_method(r):
+    """Learned map with the highest lift at the largest training size (chosen on the random split)."""
+    i = last_size(r)
+    return max(("procrustes", "ridge"), key=lambda m: r["curves"][m]["all"]["lift_mean"][i])
+
+
+def linkage(r, best):
+    """That learned map at the largest training size, against chance and its shuffled-pairs control."""
+    i = last_size(r)
     cur, ctrl = r["curves"][best]["all"], r["curves"][best + ", shuffled pairs"]["all"]
     return (f"{cur['top1_mean'][i]:.1%} vs {cur['chance_mean'][i]:.1%} chance (x{cur['lift_mean'][i]:.1f}) "
             f"with {r['grid'][i]} training pairs ({best}); shuffled-pairs control x{ctrl['lift_mean'][i]:.1f}")
@@ -46,7 +55,8 @@ def main():
         row = {
             "model": m,
             "slide-to-slide (all)": rate(t.get("test1", {}).get("all")),
-            "slide-to-slide (same site)": rate(t.get("test1", {}).get("site")),
+            # TCGA site codes are per cancer type, so "same site" already means same dx + site
+            "slide-to-slide (same dx + site)": rate(t.get("test1", {}).get("dx+site")),
             "report-to-slide (all)": rate(t.get("test2", {}).get("all")),
             "report-to-slide (same dx + site) HEADLINE": rate(t.get("test2", {}).get("dx+site")),
         }
@@ -62,10 +72,12 @@ def main():
                     row[f"key scrambling, {name}"] = f"broken with {broken[a]} known pairs ({a})"
                 else:
                     row[f"key scrambling, {name}"] = f"survives up to k={max(r['ks'])}"
-        for split in ("", "_site"):
+        best = None  # the site split reuses the random split's method, as in 11_figures.py
+        for split, label in (("", ""), ("_site", " (unseen hospitals)")):
             r = load(m, f"linkage{split}").get("tests", {}).get("test2")
             if r:
-                row[f"learned linkage, report-to-slide{split.replace('_', ' (') + ')' if split else ''}"] = linkage(r)
+                best = best or best_method(r)
+                row[f"learned linkage, report-to-slide{label}"] = linkage(r, best)
         for method in ("noise", "remove"):
             res = rm.get("methods", {}).get(method)
             if res:
