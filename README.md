@@ -1,9 +1,10 @@
 # Tissue Fingerprints: Delta code
 
-Code for every step of the plan, 1 through 11 (heatmaps and the scorecard included).
+Code for every step of the plan, 1 through 11 (heatmaps and the scorecard included), plus two data checks (12, 13).
 
-**Status (10/18):** ran end to end on Delta for 200 TCGA lung cancer patients (LUAD + LUSC) with
-CONCH, MUSK, PathGen-CLIP, QuiltNet and PLIP. The results and the story are in [STORY.md](STORY.md).
+**Status (10/18):** ran end to end on Delta with CONCH, MUSK, PathGen-CLIP, QuiltNet and PLIP for 200 TCGA lung
+cancer patients (LUAD + LUSC), audited down to 188: `12_duplicates.py` removed 12 pairs that were one piece of
+tissue under two barcodes. The results and the story are in [STORY.md](STORY.md).
 CONCH and MUSK use Saanvi's copies of the weights (`config.sh`).
 
 ## What is on Delta (checked 10/17)
@@ -40,6 +41,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | 1 Environments | `bash setup_env.sh` | **login node** (needs internet, ~20 min) |
 | 2a Data | `source config.sh; python3 tcga_download.py --n-patients 200` | **login node**, ~165 GB, 15–40 min |
 | 2b Pick patients | `source activate.sh main; python 01_pick_patients.py --projects TCGA-LUAD TCGA-LUSC` | login node or Jupyter |
+| 12 Same-tissue check | `python 12_duplicates.py` (after tiling; writes `data/patients_clean.csv`, which 05–11 then use) | login node, a minute |
 | 3–5 Tile + embed | `sbatch slurm/pipeline_gpu.sbatch` (what we used; `--export=ALL,MODELS=conch` for one model) | one A100 job, ~10 min for 400 slides |
 | 3 Tiling, alternative | `sbatch slurm/tile.sbatch` | CPU account; the CPU queue was full on 10/17, so not used |
 | 4–5 Embedding, alternative | `sbatch slurm/embed.sbatch` (MUSK: `--array=1`, needs the `tf-musk` env) | GPU, one array task per model |
@@ -51,6 +53,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | Deck figures | `python 11_figures.py` (after the steps above, all models at once) | CPU, seconds |
 | 11 Scorecard | `python 08_scorecard.py` | CPU |
 | 05–11 as a batch job | `sbatch --export=ALL,MODELS=musk slurm/analyze.sbatch` (use this for 1024-dim models) | A100 node's 16 cores, not the login node |
+| 13 Pen-ink check | `python 13_ink.py` (re-runs Test 1 without ink tiles; reads every tile, ~11 GB) | `cpu-interactive` job, ~10 min |
 | Freeze to GitHub | `bash sync_results.sh` (after 08 and 11) | login node |
 
 For steps 6–10, run the commands once each for every embedded model (`conch`, `musk`, `pathgen`, `quilt`, `plip`). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
@@ -102,6 +105,8 @@ code/results/  (in this repo)              lean copy pushed by sync_results.sh: 
   `slurm/pipeline_gpu.sbatch` (tiling + embedding), `05`–`11`, for PathGen-CLIP, QuiltNet and PLIP; for MUSK,
   `slurm/embed.sbatch` (`--array=1`, on A100) and `slurm/analyze.sbatch`; for CONCH, the same two on the
   `-interactive` GPU partitions with `--time=00:30:00` (on 10/18 the regular GPU queues estimated starts after 10/21).
+  Then `12_duplicates.py` (200 -> 188), `slurm/analyze.sbatch` again for all five models on the interactive GPU
+  partitions (`--time=00:55:00`, two jobs), and `13_ink.py` on `cpu-interactive`.
 - **Never run on Delta:** `slurm/check_models.sbatch`, `slurm/tile.sbatch` (`pipeline_gpu.sbatch` replaced them).
 - **Synthetic only:** `python tests/smoke_test.py` (barcodes, pairing, chunking, tiling on a fake slide, steps 05–11
   on synthetic embeddings). Its numbers are not results.
