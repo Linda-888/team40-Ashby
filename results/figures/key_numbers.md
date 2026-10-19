@@ -2,88 +2,88 @@
 
 ## Across models (x chance)
 
-- Test 1 slide -> slide: 10.0x to 12.0x  (CONCH 10.0x, MUSK 10.0x, PathGen-CLIP 12.0x, QuiltNet 12.0x, PLIP 10.0x)
-- Test 1 same hospital: 1.4x to 2.1x  (CONCH 2.1x, MUSK 1.8x, PathGen-CLIP 1.7x, QuiltNet 1.5x, PLIP 1.4x)
+- Test 1 slide -> slide: 5.0x to 8.0x  (CONCH 7.0x, MUSK 5.0x, PathGen-CLIP 8.0x, QuiltNet 7.0x, PLIP 7.0x)
+- Test 1 same hospital: 1.4x to 2.0x  (CONCH 2.0x, MUSK 1.8x, PathGen-CLIP 1.6x, QuiltNet 1.4x, PLIP 1.4x)
 - Test 2 report -> slide, zero-shot: 0.0x to 1.0x  (CONCH 0.0x, MUSK 1.0x, PathGen-CLIP 1.0x, QuiltNet 1.0x, PLIP 0.0x)
-- Test 2 learned map: 3.9x to 5.9x  (CONCH 3.9x, MUSK 5.1x, PathGen-CLIP 5.8x, QuiltNet 4.6x, PLIP 5.9x)
-- Test 2 learned map, unseen hospitals: 1.1x to 2.2x  (CONCH 1.5x, MUSK 1.5x, PathGen-CLIP 2.2x, QuiltNet 1.1x, PLIP 1.5x)
-- Test 2 learned map, same hospital: 1.0x to 1.1x  (CONCH 1.1x, MUSK 1.1x, PathGen-CLIP 1.1x, QuiltNet 1.0x, PLIP 1.1x)
-- Test 1 scrambled, 0 known pairs: 0.8x to 1.2x  (CONCH 0.8x, MUSK 1.2x, PathGen-CLIP 1.2x, QuiltNet 1.2x, PLIP 1.2x)
-- Test 1 scrambled, 50 known pairs: 4.6x to 8.0x  (CONCH 7.6x, MUSK 8.0x, PathGen-CLIP 6.8x, QuiltNet 5.8x, PLIP 4.6x)
-- Test 1 after noise: 1.7x to 2.0x  (CONCH 1.8x, MUSK 2.0x, PathGen-CLIP 1.8x, QuiltNet 1.7x, PLIP 1.8x)
-- Test 1 after removing identity dirs: 5.5x to 7.0x  (CONCH 5.5x, MUSK 7.0x, PathGen-CLIP 7.0x, QuiltNet 7.0x, PLIP 6.0x)
+- Test 2 learned map: 3.4x to 7.1x  (CONCH 3.4x, MUSK 5.9x, PathGen-CLIP 5.6x, QuiltNet 5.0x, PLIP 7.1x)
+- Test 2 learned map, unseen hospitals: 1.2x to 1.6x  (CONCH 1.4x, MUSK 1.3x, PathGen-CLIP 1.4x, QuiltNet 1.2x, PLIP 1.6x)
+- Test 2 learned map, same hospital: 1.0x to 1.1x  (CONCH 1.0x, MUSK 1.1x, PathGen-CLIP 1.1x, QuiltNet 1.1x, PLIP 1.1x)
+- Test 1 scrambled, 0 known pairs: 0.8x to 1.2x  (CONCH 0.8x, MUSK 1.2x, PathGen-CLIP 1.2x, QuiltNet 1.0x, PLIP 1.0x)
+- Test 1 scrambled, 50 known pairs: 5.0x to 7.4x  (CONCH 5.0x, MUSK 7.4x, PathGen-CLIP 6.8x, QuiltNet 6.2x, PLIP 6.4x)
+- Test 1 after noise: 1.0x to 1.8x  (CONCH 1.5x, MUSK 1.0x, PathGen-CLIP 1.7x, QuiltNet 1.8x, PLIP 1.8x)
+- Test 1 after removing identity dirs: 2.5x to 5.5x  (CONCH 5.0x, MUSK 5.5x, PathGen-CLIP 2.5x, QuiltNet 4.0x, PLIP 3.0x)
 
-## CONCH (193 patients)
-- Test 1 slide -> slide, all: 5.2% vs 0.5% chance (10.0x, 95% CI 2.8%-9.3%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis: 6.7% vs 1.0% chance (6.5x, 95% CI 4.0%-11.2%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis + hospital: 36.8% vs 17.6% chance (2.1x, 95% CI 30.1%-44.0%, p=0.0005, n=182)
-- Test 2 report -> slide, zero-shot, all: 0.0% vs 0.5% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis: 0.5% vs 1.0% chance (0.5x, 95% CI 0.1%-2.9%, p=0.8611, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 19.2% vs 17.6% chance (1.1x, 95% CI 14.2%-25.6%, p=0.3118, n=182)
-- Test 2 learned map: 3.9x (100 pairs)
-- Test 2 learned map, unseen hospitals: 1.5x (100 pairs)
-- Test 2 learned map, same hospital: 1.1x
+## CONCH (188 patients)
+- Test 1 slide -> slide, all: 3.7% vs 0.5% chance (7.0x, 95% CI 1.8%-7.5%, p=0.0010, n=188)
+- Test 1 slide -> slide, same diagnosis: 5.9% vs 1.1% chance (5.5x, 95% CI 3.3%-10.2%, p=0.0005, n=188)
+- Test 1 slide -> slide, same diagnosis + hospital: 36.0% vs 18.0% chance (2.0x, 95% CI 29.3%-43.2%, p=0.0005, n=178)
+- Test 2 report -> slide, zero-shot, all: 0.0% vs 0.5% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis: 0.5% vs 1.1% chance (0.5x, 95% CI 0.1%-3.0%, p=0.8626, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 19.1% vs 18.0% chance (1.1x, 95% CI 14.0%-25.5%, p=0.3803, n=178)
+- Test 2 learned map: 3.4x (100 pairs)
+- Test 2 learned map, unseen hospitals: 1.4x (100 pairs)
+- Test 2 learned map, same hospital: 1.0x
 - Test 1 scrambled, 0 known pairs: 0.8x
-- Test 1 scrambled, 50 known pairs: 7.6x
-- Test 1 after noise: 1.8x (sigma 3, acc 0.85->0.56)
-- Test 1 after removing identity dirs: 5.5x (k=50, acc 0.79)
+- Test 1 scrambled, 50 known pairs: 5.0x
+- Test 1 after noise: 1.5x (sigma 5, acc 0.88->0.49)
+- Test 1 after removing identity dirs: 5.0x (k=50, acc 0.84)
 
-## MUSK (193 patients)
-- Test 1 slide -> slide, all: 5.2% vs 0.5% chance (10.0x, 95% CI 2.8%-9.3%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis: 5.7% vs 1.0% chance (5.5x, 95% CI 3.2%-9.9%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis + hospital: 32.4% vs 17.6% chance (1.8x, 95% CI 26.0%-39.5%, p=0.0005, n=182)
-- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-2.9%, p=0.6292, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis: 0.5% vs 1.0% chance (0.5x, 95% CI 0.1%-2.9%, p=0.8611, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 22.0% vs 17.6% chance (1.3x, 95% CI 16.6%-28.5%, p=0.0625, n=182)
-- Test 2 learned map: 5.1x (100 pairs)
-- Test 2 learned map, unseen hospitals: 1.5x (100 pairs)
+## MUSK (188 patients)
+- Test 1 slide -> slide, all: 2.7% vs 0.5% chance (5.0x, 95% CI 1.1%-6.1%, p=0.0040, n=188)
+- Test 1 slide -> slide, same diagnosis: 4.3% vs 1.1% chance (4.0x, 95% CI 2.2%-8.2%, p=0.0025, n=188)
+- Test 1 slide -> slide, same diagnosis + hospital: 32.6% vs 18.0% chance (1.8x, 95% CI 26.1%-39.8%, p=0.0005, n=178)
+- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-3.0%, p=0.6357, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis: 0.5% vs 1.1% chance (0.5x, 95% CI 0.1%-3.0%, p=0.8626, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 22.5% vs 18.0% chance (1.2x, 95% CI 17.0%-29.1%, p=0.0610, n=178)
+- Test 2 learned map: 5.9x (100 pairs)
+- Test 2 learned map, unseen hospitals: 1.3x (100 pairs)
 - Test 2 learned map, same hospital: 1.1x
 - Test 1 scrambled, 0 known pairs: 1.2x
-- Test 1 scrambled, 50 known pairs: 8.0x
-- Test 1 after noise: 2.0x (sigma 1.5, acc 0.83->0.57)
-- Test 1 after removing identity dirs: 7.0x (k=50, acc 0.79)
+- Test 1 scrambled, 50 known pairs: 7.4x
+- Test 1 after noise: 1.0x (sigma 1.5, acc 0.80->0.58)
+- Test 1 after removing identity dirs: 5.5x (k=50, acc 0.74)
 
-## PathGen-CLIP (193 patients)
-- Test 1 slide -> slide, all: 6.2% vs 0.5% chance (12.0x, 95% CI 3.6%-10.6%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis: 7.8% vs 1.0% chance (7.5x, 95% CI 4.8%-12.4%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis + hospital: 29.7% vs 17.6% chance (1.7x, 95% CI 23.5%-36.7%, p=0.0005, n=182)
-- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-2.9%, p=0.6292, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis: 1.0% vs 1.0% chance (1.0x, 95% CI 0.3%-3.7%, p=0.5917, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 18.1% vs 17.6% chance (1.0x, 95% CI 13.2%-24.4%, p=0.4603, n=182)
-- Test 2 learned map: 5.8x (100 pairs)
-- Test 2 learned map, unseen hospitals: 2.2x (100 pairs)
+## PathGen-CLIP (188 patients)
+- Test 1 slide -> slide, all: 4.3% vs 0.5% chance (8.0x, 95% CI 2.2%-8.2%, p=0.0005, n=188)
+- Test 1 slide -> slide, same diagnosis: 5.3% vs 1.1% chance (5.0x, 95% CI 2.9%-9.5%, p=0.0010, n=188)
+- Test 1 slide -> slide, same diagnosis + hospital: 29.2% vs 18.0% chance (1.6x, 95% CI 23.0%-36.3%, p=0.0005, n=178)
+- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-3.0%, p=0.6357, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis: 1.1% vs 1.1% chance (1.0x, 95% CI 0.3%-3.8%, p=0.5947, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 18.5% vs 18.0% chance (1.0x, 95% CI 13.5%-24.9%, p=0.4473, n=178)
+- Test 2 learned map: 5.6x (100 pairs)
+- Test 2 learned map, unseen hospitals: 1.4x (100 pairs)
 - Test 2 learned map, same hospital: 1.1x
 - Test 1 scrambled, 0 known pairs: 1.2x
 - Test 1 scrambled, 50 known pairs: 6.8x
-- Test 1 after noise: 1.8x (sigma 1.5, acc 0.78->0.55)
-- Test 1 after removing identity dirs: 7.0x (k=50, acc 0.78)
+- Test 1 after noise: 1.7x (sigma 1.5, acc 0.80->0.51)
+- Test 1 after removing identity dirs: 2.5x (k=50, acc 0.78)
 
-## QuiltNet (193 patients)
-- Test 1 slide -> slide, all: 6.2% vs 0.5% chance (12.0x, 95% CI 3.6%-10.6%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis: 6.7% vs 1.0% chance (6.5x, 95% CI 4.0%-11.2%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis + hospital: 25.8% vs 17.6% chance (1.5x, 95% CI 20.0%-32.6%, p=0.0045, n=182)
-- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-2.9%, p=0.6292, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis: 1.0% vs 1.0% chance (1.0x, 95% CI 0.3%-3.7%, p=0.5917, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 16.5% vs 17.6% chance (0.9x, 95% CI 11.8%-22.6%, p=0.7071, n=182)
-- Test 2 learned map: 4.6x (100 pairs)
-- Test 2 learned map, unseen hospitals: 1.1x (100 pairs)
-- Test 2 learned map, same hospital: 1.0x
-- Test 1 scrambled, 0 known pairs: 1.2x
-- Test 1 scrambled, 50 known pairs: 5.8x
-- Test 1 after noise: 1.7x (sigma 1.5, acc 0.77->0.54)
-- Test 1 after removing identity dirs: 7.0x (k=50, acc 0.73)
-
-## PLIP (193 patients)
-- Test 1 slide -> slide, all: 5.2% vs 0.5% chance (10.0x, 95% CI 2.8%-9.3%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis: 6.2% vs 1.0% chance (6.0x, 95% CI 3.6%-10.6%, p=0.0005, n=193)
-- Test 1 slide -> slide, same diagnosis + hospital: 25.3% vs 17.6% chance (1.4x, 95% CI 19.5%-32.1%, p=0.0060, n=182)
-- Test 2 report -> slide, zero-shot, all: 0.0% vs 0.5% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis: 0.0% vs 1.0% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=193)
-- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 17.0% vs 17.6% chance (1.0x, 95% CI 12.3%-23.2%, p=0.6282, n=182)
-- Test 2 learned map: 5.9x (100 pairs)
-- Test 2 learned map, unseen hospitals: 1.5x (100 pairs)
+## QuiltNet (188 patients)
+- Test 1 slide -> slide, all: 3.7% vs 0.5% chance (7.0x, 95% CI 1.8%-7.5%, p=0.0010, n=188)
+- Test 1 slide -> slide, same diagnosis: 4.8% vs 1.1% chance (4.5x, 95% CI 2.5%-8.8%, p=0.0010, n=188)
+- Test 1 slide -> slide, same diagnosis + hospital: 25.3% vs 18.0% chance (1.4x, 95% CI 19.5%-32.1%, p=0.0065, n=178)
+- Test 2 report -> slide, zero-shot, all: 0.5% vs 0.5% chance (1.0x, 95% CI 0.1%-3.0%, p=0.6357, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis: 1.1% vs 1.1% chance (1.0x, 95% CI 0.3%-3.8%, p=0.5947, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 16.9% vs 18.0% chance (0.9x, 95% CI 12.1%-23.0%, p=0.6837, n=178)
+- Test 2 learned map: 5.0x (100 pairs)
+- Test 2 learned map, unseen hospitals: 1.2x (100 pairs)
 - Test 2 learned map, same hospital: 1.1x
-- Test 1 scrambled, 0 known pairs: 1.2x
-- Test 1 scrambled, 50 known pairs: 4.6x
-- Test 1 after noise: 1.8x (sigma 1.5, acc 0.82->0.55)
-- Test 1 after removing identity dirs: 6.0x (k=50, acc 0.79)
+- Test 1 scrambled, 0 known pairs: 1.0x
+- Test 1 scrambled, 50 known pairs: 6.2x
+- Test 1 after noise: 1.8x (sigma 0.5, acc 0.82->0.67)
+- Test 1 after removing identity dirs: 4.0x (k=50, acc 0.80)
+
+## PLIP (188 patients)
+- Test 1 slide -> slide, all: 3.7% vs 0.5% chance (7.0x, 95% CI 1.8%-7.5%, p=0.0010, n=188)
+- Test 1 slide -> slide, same diagnosis: 4.3% vs 1.1% chance (4.0x, 95% CI 2.2%-8.2%, p=0.0025, n=188)
+- Test 1 slide -> slide, same diagnosis + hospital: 25.3% vs 18.0% chance (1.4x, 95% CI 19.5%-32.1%, p=0.0065, n=178)
+- Test 2 report -> slide, zero-shot, all: 0.0% vs 0.5% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis: 0.0% vs 1.1% chance (0.0x, 95% CI 0.0%-2.0%, p=1.0000, n=188)
+- Test 2 report -> slide, zero-shot, same diagnosis + hospital: 17.4% vs 18.0% chance (1.0x, 95% CI 12.5%-23.7%, p=0.6072, n=178)
+- Test 2 learned map: 7.1x (100 pairs)
+- Test 2 learned map, unseen hospitals: 1.6x (100 pairs)
+- Test 2 learned map, same hospital: 1.1x
+- Test 1 scrambled, 0 known pairs: 1.0x
+- Test 1 scrambled, 50 known pairs: 6.4x
+- Test 1 after noise: 1.8x (sigma 0.75, acc 0.80->0.62)
+- Test 1 after removing identity dirs: 3.0x (k=50, acc 0.80)
