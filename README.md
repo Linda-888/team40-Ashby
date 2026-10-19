@@ -2,9 +2,9 @@
 
 Code for every step of the plan, 1 through 11 (heatmaps and the scorecard included).
 
-**Status (10/17):** ran end to end on Delta for 200 TCGA lung cancer patients (LUAD + LUSC) with
-MUSK, PathGen-CLIP, QuiltNet and PLIP. The results and the story are in [STORY.md](STORY.md).
-CONCH is not run yet (Hugging Face access pending). MUSK uses Saanvi's copy of the weights (`config.sh`).
+**Status (10/18):** ran end to end on Delta for 200 TCGA lung cancer patients (LUAD + LUSC) with
+CONCH, MUSK, PathGen-CLIP, QuiltNet and PLIP. The results and the story are in [STORY.md](STORY.md).
+CONCH and MUSK use Saanvi's copies of the weights (`config.sh`).
 
 ## What is on Delta (checked 10/17)
 
@@ -53,7 +53,7 @@ All commands run from the `code/` directory. Create the log folder once with `mk
 | 05–11 as a batch job | `sbatch --export=ALL,MODELS=musk slurm/analyze.sbatch` (use this for 1024-dim models) | A100 node's 16 cores, not the login node |
 | Freeze to GitHub | `bash sync_results.sh` (after 08 and 11) | login node |
 
-For steps 6–10, run the commands once each for every embedded model (`pathgen`, `quilt`, `plip`, and later `conch`, `musk`). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
+For steps 6–10, run the commands once each for every embedded model (`conch`, `musk`, `pathgen`, `quilt`, `plip`). They only need numpy and sklearn, so the `tf-main` kernel in Jupyter works fine.
 
 **For a quick first pass:** add `--max-patients 60` to `01_pick_patients.py`. That runs the whole pipeline on a small set; afterwards, rerun 01 without the flag. Steps 02, 03 and 04 skip anything already finished, so a killed job just needs resubmitting.
 
@@ -66,7 +66,7 @@ For steps 6–10, run the commands once each for every embedded model (`pathgen`
   TS and BS slides of the same frozen piece count as one specimen and are never paired together (`fingerprints/barcodes.py`).
 - **Diagnosis.** Defaults to the TCGA project, so picking LUAD + LUSC gives the subtype classifier free labels. Passing `--clinical clinical.tsv` (exported from GDC) switches to primary_diagnosis instead.
 - **Embedding space.** Every model uses its projected image-text shared space (CONCH `proj_contrast=True`, MUSK `with_head=True`, CLIP-style `encode_image` for the others), because Test 2 compares images and text directly.
-- **Five models supported, four run.** The plan's three (CONCH, MUSK, PathGen-CLIP), plus QuiltNet-B-32 and PLIP from the hackathon's model list. MUSK, PathGen-CLIP, QuiltNet and PLIP have been run; CONCH waits on access.
+- **Five models, all run.** The plan's three (CONCH, MUSK, PathGen-CLIP), plus QuiltNet-B-32 and PLIP from the hackathon's model list.
 - **Two conda envs.** MUSK pins torch 2.0.1 / timm 0.9.8 and conflicts with CONCH. `tf-main` holds CONCH, PathGen, OpenSlide and all the analysis code; `tf-musk` holds only MUSK.
 - **Fairness controls.** `05_tests.py` reports all four candidate sets: `all`, `site`, `dx`, `dx+site`. The plan's headline was Test 2 `dx+site`; on real data it is at chance, so the headline is now Test 1 (see STORY.md). Each result includes chance, a Wilson 95% CI, and a p-value from simulating random guessing.
 - **Scrambling attack (`06_scramble.py`).** Test 1 and Test 2 each get two independent rotations. The script runs two attacks:
@@ -100,9 +100,9 @@ code/results/  (in this repo)              lean copy pushed by sync_results.sh: 
 
 - **On Delta with real data (200 patients):** `setup_env.sh`, `tcga_download.py`, `01_pick_patients.py`,
   `slurm/pipeline_gpu.sbatch` (tiling + embedding), `05`–`11`, for PathGen-CLIP, QuiltNet and PLIP; for MUSK,
-  `slurm/embed.sbatch` (`--array=1`, on A100) and `slurm/analyze.sbatch`.
-- **Never run on Delta:** `slurm/check_models.sbatch`, `slurm/tile.sbatch` (`pipeline_gpu.sbatch` replaced them),
-  and anything with CONCH.
+  `slurm/embed.sbatch` (`--array=1`, on A100) and `slurm/analyze.sbatch`; for CONCH, the same two on the
+  `-interactive` GPU partitions with `--time=00:30:00` (on 10/18 the regular GPU queues estimated starts after 10/21).
+- **Never run on Delta:** `slurm/check_models.sbatch`, `slurm/tile.sbatch` (`pipeline_gpu.sbatch` replaced them).
 - **Synthetic only:** `python tests/smoke_test.py` (barcodes, pairing, chunking, tiling on a fake slide, steps 05–11
   on synthetic embeddings). Its numbers are not results.
 - **Caveat:** the Test 2 rows of the heatmap summaries are noise, because Test 2 itself is at chance. Use only Test 1 heatmaps.
@@ -110,7 +110,7 @@ code/results/  (in this repo)              lean copy pushed by sync_results.sh: 
 ## Judging criteria (from the hackathon page)
 
 1. Innovation and creativity in using AI/ML → an individual tissue fingerprint across specimens, breaking key scrambling, and a learned cross-modal attack with hospital-level controls
-2. Development progress, including effective use of compute and existing literature/tools → Delta batch jobs, four models run (CONCH pending), prior work as the baseline
+2. Development progress, including effective use of compute and existing literature/tools → Delta batch jobs, five models run, prior work as the baseline
 3. Clinical impact ("relevance and potential clinical impact") → safe data sharing between hospitals, plus the scorecard as a pre-release check
 4. Quality and clarity of the final summary and oral presentation
 

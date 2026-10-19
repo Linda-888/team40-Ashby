@@ -78,10 +78,15 @@ def main():
             if r:
                 best = best or best_method(r)
                 row[f"learned linkage, report-to-slide{label}"] = linkage(r, best)
+        # A fix only has to block the tests that leak in clear text (as for scrambling above); a test
+        # already at chance can drift just past the bar under noise, which says nothing about the fix.
+        leaking = [n for n in ("test1", "test2") if t.get(n, {}).get("all", {}).get("p_value", 1) <= 0.05]
+        bar = rm.get("max_lift", 2.0)  # same cut as 07_remove.py and 11_figures.py
         for method in ("noise", "remove"):
             res = rm.get("methods", {}).get(method)
             if res:
-                s = res["sweet_spot"]
+                ok = [r for r in res["rows"] if all(r.get(f"{n}_all_lift", 0) <= bar for n in leaking)]
+                s = max(ok, key=lambda r: r["utility"] if r["utility"] == r["utility"] else -1) if ok else None
                 row[f"fix: {method}"] = (f"strength {s['strength']:g}, accuracy {res['baseline_utility']:.3f}"
                                          f" -> {s['utility']:.3f}" if s else "no setting blocks both tests")
         rows.append(row)
