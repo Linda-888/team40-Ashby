@@ -28,7 +28,7 @@ from PIL import Image  # noqa: E402
 from scipy import ndimage  # noqa: E402
 
 from fingerprints import data, paths  # noqa: E402
-from fingerprints.matching import CONTROLS, fmt, test1  # noqa: E402
+from fingerprints.matching import CONTROLS, fmt, ranks_of_truth, test1  # noqa: E402
 from fingerprints.tiling import tissue_mask  # noqa: E402
 
 OUTLINE_GRID, LAYOUT_GRID = 64, 32
@@ -102,14 +102,15 @@ def best_corr(sa, sb):
     return max(float((a * c).mean()) for a in sa for b in sb for c in _turns(b))
 
 
-def montage(rows, dst, title):
+def montage(rows, dst, title, extra=None):
     fig, axes = plt.subplots(len(rows), 2, figsize=(7, 2.1 * len(rows)))
     for ax_row, r in zip(np.atleast_2d(axes), rows):
         for ax, sid in zip(ax_row, (r.slide_a, r.slide_b)):
             ax.imshow(Image.open(paths.thumbs_dir() / f"{sid}.jpg"))
             ax.set_title(sid, fontsize=7)
             ax.axis("off")
-        ax_row[0].text(-0.05, 0.5, f"outline {r.outline:.2f}\nlayout {r.layout:.2f}", transform=ax_row[0].transAxes,
+        note = f"\n{extra[r.patient_id]}" if extra else ""
+        ax_row[0].text(-0.05, 0.5, f"outline {r.outline:.2f}\nlayout {r.layout:.2f}{note}", transform=ax_row[0].transAxes,
                        ha="right", va="center", fontsize=8)
     fig.suptitle(title, fontsize=9)
     fig.tight_layout()
@@ -153,6 +154,7 @@ def main():
            "test1_without_same_tissue": {}}
 
     dup_ids = set(ok.patient_id[ok.same_tissue])
+    hits = {}  # patient -> models that rank the true slide B first, after cleaning
     clean = pts[~pts.patient_id.isin(dup_ids)]
     clean.to_csv(paths.clean_patients_csv(), index=False)
     out["n_clean"] = len(clean)
@@ -168,7 +170,12 @@ def main():
             s = test1(e.subset(keep), control)
             out["test1_without_same_tissue"][m][control] = s
             print(f"  {control:8s} {fmt(s)}")
+        es = e.subset(keep)
+        r, _ = ranks_of_truth(es.A[es.has_B], es.B[es.has_B])
+        for pid in es.patients.patient_id[es.has_B].to_numpy()[r == 1]:
+            hits.setdefault(pid, []).append(m)
 
+    out["top1_hits"] = hits
     res = paths.root() / "results"
     top = ok.sort_values("margin", ascending=False)
     top.to_csv(res / "duplicates.csv", index=False)
@@ -178,7 +185,12 @@ def main():
     above, below = top[top.same_tissue].tail(4), top[~top.same_tissue].head(4)
     montage(list(above.itertuples()) + list(below.itertuples()), res / "duplicates_borderline.png",
             "Around the cut: the four least alike flagged pairs, then the four most alike kept pairs")
-    print(f"-> {res}/duplicates.csv, duplicates.json, duplicates_examples.png, duplicates_borderline.png")
+    if hits:
+        order = sorted(hits, key=lambda p: -len(hits[p]))[:16]
+        rows = list(ok.set_index("patient_id").loc[order].reset_index().itertuples())
+        montage(rows, res / "top1_pairs.png", "Clean pairs the attack ranks first (models that do)",
+                {p: f"{len(v)} model{'s' if len(v) > 1 else ''}" for p, v in hits.items()})
+    print(f"-> {res}/duplicates.csv, duplicates.json, duplicates_examples.png, duplicates_borderline.png, top1_pairs.png")
 
 
 if __name__ == "__main__":
