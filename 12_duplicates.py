@@ -8,7 +8,9 @@ flips). The same section twice scores far above what two different patients' sli
 Test 1 is re-run on the patients whose pair looks like two different specimens.
     python 12_duplicates.py                 # flag pairs above the 99th percentile of other-patient pairs
     python 12_duplicates.py --threshold 0.7
-Writes results/duplicates.csv, results/duplicates.json and results/duplicates_examples.png.
+Writes data/patients_clean.csv (all patients minus the flagged ones; every analysis then uses it, see
+fingerprints/paths.py), results/duplicates.csv, results/duplicates.json and results/duplicates_examples.png.
+Run it after tiling (it needs the thumbnails) and before 05-11.
 """
 import argparse
 import json
@@ -81,7 +83,7 @@ def main():
     ap.add_argument("--n-null", type=int, default=5, help="other-patient pairs per patient for the baseline")
     args = ap.parse_args()
 
-    pts = pd.read_csv(paths.patients_csv(), dtype={"site": str})
+    pts = pd.read_csv(paths.all_patients_csv(), dtype={"site": str})
     A = {s: outline(s) for s in pts.slide_a}
     B = {s: outline(s) for s in pts.slide_b}
     ok = pts[[A[a] is not None and B[b] is not None for a, b in zip(pts.slide_a, pts.slide_b)]].reset_index(drop=True)
@@ -106,6 +108,10 @@ def main():
            "test1_without_same_section": {}}
 
     dup_ids = set(ok.patient_id[ok.same_section])
+    clean = pts[~pts.patient_id.isin(dup_ids)]
+    clean.to_csv(paths.clean_patients_csv(), index=False)
+    out["n_clean"] = len(clean)
+    print(f"{len(clean)} patients -> {paths.clean_patients_csv()} (the analyses use this list from now on)")
     for m in paths.MODELS:
         if not (paths.emb_dir(m) / "slides.npz").exists():
             continue

@@ -113,12 +113,13 @@ def main():
         print(f"warning: dropping {dupes.sum()} duplicate slide barcodes")
         slides = slides[~dupes]
 
-    paths.patients_csv().parent.mkdir(parents=True, exist_ok=True)
-    patients.to_csv(paths.patients_csv(), index=False)
+    paths.all_patients_csv().parent.mkdir(parents=True, exist_ok=True)
+    patients.to_csv(paths.all_patients_csv(), index=False)
+    paths.clean_patients_csv().unlink(missing_ok=True)  # a new patient list needs a new 12_duplicates.py run
     slides.to_csv(paths.slides_csv(), index=False)
 
     site_n = patients.site.value_counts()
-    print(f"\n{len(patients)} patients, {len(slides)} slides -> {paths.patients_csv()}")
+    print(f"\n{len(patients)} patients, {len(slides)} slides -> {paths.all_patients_csv()}")
     print(f"pair kinds:\n{patients.pair_kind.value_counts().to_string()}")
     print(f"diagnoses:\n{patients.diagnosis.value_counts().to_string()}")
     print(f"sites: {len(site_n)} total, {(site_n >= 2).sum()} with >=2 patients "

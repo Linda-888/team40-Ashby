@@ -13,8 +13,19 @@ def work() -> Path:
     return Path(os.environ.get("TF_WORK", str(root())))
 
 
-def patients_csv() -> Path:
+def all_patients_csv() -> Path:
+    """Every patient 01_pick_patients.py chose."""
     return root() / "data" / "patients.csv"
+
+
+def clean_patients_csv() -> Path:
+    return root() / "data" / "patients_clean.csv"
+
+
+def patients_csv() -> Path:
+    """The patients the analyses use: all of them minus the pairs 12_duplicates.py flags as the same
+    section scanned twice, once that check has written data/patients_clean.csv."""
+    return clean_patients_csv() if clean_patients_csv().exists() else all_patients_csv()
 
 
 def slides_csv() -> Path:

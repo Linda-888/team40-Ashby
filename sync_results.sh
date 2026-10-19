@@ -23,7 +23,7 @@ for d in "$TF_ROOT"/results/*/; do
     mkdir -p "results/$m"
     cp "$d"*.json "$d"*.png "results/$m/" 2>/dev/null || true
 done
-cp "$TF_ROOT/data/patients.csv" results/
+cp "$TF_ROOT/data/patients_clean.csv" results/patients.csv 2>/dev/null || cp "$TF_ROOT/data/patients.csv" results/  # the analysis set
 
 git add -A results
 if git diff --cached --quiet; then
