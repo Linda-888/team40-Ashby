@@ -15,7 +15,7 @@ rm -rf results
 mkdir -p results
 cp -r "$TF_ROOT/results/figures" results/
 cp "$TF_ROOT"/results/scorecard.md "$TF_ROOT"/results/scorecard.csv results/ 2>/dev/null || true
-cp "$TF_ROOT"/results/duplicates.csv "$TF_ROOT"/results/duplicates.json "$TF_ROOT"/results/duplicates_examples.png \
+cp "$TF_ROOT"/results/duplicates.csv "$TF_ROOT"/results/duplicates.json "$TF_ROOT"/results/duplicates_examples.png "$TF_ROOT"/results/duplicates_borderline.png \
     results/ 2>/dev/null || true
 for d in "$TF_ROOT"/results/*/; do
     m=$(basename "$d")
