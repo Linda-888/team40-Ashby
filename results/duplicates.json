@@ -356,5 +356,83 @@
       }
     }
   },
-  "n_clean": 188
+  "n_clean": 188,
+  "top1_hits": {
+    "TCGA-55-6975": [
+      "conch"
+    ],
+    "TCGA-55-6978": [
+      "conch"
+    ],
+    "TCGA-69-7980": [
+      "conch"
+    ],
+    "TCGA-77-8133": [
+      "conch"
+    ],
+    "TCGA-86-7711": [
+      "conch",
+      "musk",
+      "pathgen",
+      "quilt",
+      "plip"
+    ],
+    "TCGA-95-7567": [
+      "conch"
+    ],
+    "TCGA-97-7938": [
+      "conch"
+    ],
+    "TCGA-43-A56U": [
+      "musk",
+      "pathgen",
+      "quilt",
+      "plip"
+    ],
+    "TCGA-44-7659": [
+      "musk"
+    ],
+    "TCGA-77-7141": [
+      "musk"
+    ],
+    "TCGA-MP-A4TD": [
+      "musk",
+      "pathgen",
+      "quilt",
+      "plip"
+    ],
+    "TCGA-37-A5EM": [
+      "pathgen"
+    ],
+    "TCGA-49-6744": [
+      "pathgen"
+    ],
+    "TCGA-53-7813": [
+      "pathgen",
+      "quilt"
+    ],
+    "TCGA-67-3771": [
+      "pathgen"
+    ],
+    "TCGA-85-7699": [
+      "pathgen"
+    ],
+    "TCGA-64-1681": [
+      "quilt",
+      "plip"
+    ],
+    "TCGA-66-2793": [
+      "quilt"
+    ],
+    "TCGA-L9-A444": [
+      "quilt",
+      "plip"
+    ],
+    "TCGA-22-1000": [
+      "plip"
+    ],
+    "TCGA-96-8169": [
+      "plip"
+    ]
+  }
 }
