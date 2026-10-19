@@ -1,7 +1,7 @@
 {
   "id_model": "musk",
   "label_model": "plip",
-  "n_patients": 15,
+  "n_patients": 20,
   "top_tiles": 10,
   "prompts": {
     "tumor": [
@@ -35,145 +35,41 @@
   },
   "tissue_mix": {
     "identity": {
-      "tumor": 0.26,
-      "stroma": 0.12,
-      "normal lung": 0.5266666666666666,
+      "tumor": 0.29,
+      "stroma": 0.14,
+      "normal lung": 0.46,
       "immune cells": 0.0,
-      "necrosis": 0.013333333333333334,
-      "blood / mucus": 0.08
+      "necrosis": 0.045,
+      "blood / mucus": 0.065
     },
     "all": {
-      "tumor": 0.212,
-      "stroma": 0.10166666666666667,
-      "normal lung": 0.5446666666666666,
-      "immune cells": 0.01633333333333333,
-      "necrosis": 0.048666666666666664,
-      "blood / mucus": 0.07666666666666666
+      "tumor": 0.29025,
+      "stroma": 0.15375,
+      "normal lung": 0.437,
+      "immune cells": 0.0105,
+      "necrosis": 0.04925,
+      "blood / mucus": 0.05925
     },
     "least": {
-      "tumor": 0.06666666666666667,
-      "stroma": 0.12666666666666668,
-      "normal lung": 0.6,
-      "immune cells": 0.02666666666666667,
-      "necrosis": 0.05333333333333334,
-      "blood / mucus": 0.12666666666666668
+      "tumor": 0.24,
+      "stroma": 0.125,
+      "normal lung": 0.45,
+      "immune cells": 0.025,
+      "necrosis": 0.055,
+      "blood / mucus": 0.105
     }
   },
   "patients": {
-    "TCGA-21-1076": {
+    "TCGA-43-A56U": {
       "rank": 1,
       "diagnosis": "TCGA-LUSC",
-      "site": "21",
+      "site": "43",
       "identity_tiles": {
-        "tumor": 0,
+        "tumor": 6,
         "stroma": 0,
-        "normal lung": 10,
+        "normal lung": 0,
         "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-21-1081": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUSC",
-      "site": "21",
-      "identity_tiles": {
-        "tumor": 0,
-        "stroma": 1,
-        "normal lung": 9,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-21-1082": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUSC",
-      "site": "21",
-      "identity_tiles": {
-        "tumor": 0,
-        "stroma": 4,
-        "normal lung": 6,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-21-1083": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUSC",
-      "site": "21",
-      "identity_tiles": {
-        "tumor": 0,
-        "stroma": 2,
-        "normal lung": 8,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-44-3396": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUAD",
-      "site": "44",
-      "identity_tiles": {
-        "tumor": 8,
-        "stroma": 0,
-        "normal lung": 1,
-        "immune cells": 0,
-        "necrosis": 1,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-44-3918": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUAD",
-      "site": "44",
-      "identity_tiles": {
-        "tumor": 8,
-        "stroma": 0,
-        "normal lung": 2,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-44-6146": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUAD",
-      "site": "44",
-      "identity_tiles": {
-        "tumor": 0,
-        "stroma": 1,
-        "normal lung": 9,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-44-6148": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUAD",
-      "site": "44",
-      "identity_tiles": {
-        "tumor": 2,
-        "stroma": 0,
-        "normal lung": 8,
-        "immune cells": 0,
-        "necrosis": 0,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-44-6779": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUAD",
-      "site": "44",
-      "identity_tiles": {
-        "tumor": 9,
-        "stroma": 0,
-        "normal lung": 1,
-        "immune cells": 0,
-        "necrosis": 0,
+        "necrosis": 4,
         "blood / mucus": 0
       }
     },
@@ -183,23 +79,10 @@
       "site": "44",
       "identity_tiles": {
         "tumor": 0,
-        "stroma": 3,
-        "normal lung": 6,
+        "stroma": 2,
+        "normal lung": 7,
         "immune cells": 0,
         "necrosis": 1,
-        "blood / mucus": 0
-      }
-    },
-    "TCGA-46-6025": {
-      "rank": 1,
-      "diagnosis": "TCGA-LUSC",
-      "site": "46",
-      "identity_tiles": {
-        "tumor": 10,
-        "stroma": 0,
-        "normal lung": 0,
-        "immune cells": 0,
-        "necrosis": 0,
         "blood / mucus": 0
       }
     },
@@ -208,12 +91,12 @@
       "diagnosis": "TCGA-LUSC",
       "site": "77",
       "identity_tiles": {
-        "tumor": 1,
+        "tumor": 2,
         "stroma": 2,
         "normal lung": 4,
         "immune cells": 0,
         "necrosis": 0,
-        "blood / mucus": 3
+        "blood / mucus": 2
       }
     },
     "TCGA-86-7711": {
@@ -229,10 +112,101 @@
         "blood / mucus": 9
       }
     },
-    "TCGA-94-7033": {
+    "TCGA-MP-A4TD": {
       "rank": 1,
+      "diagnosis": "TCGA-LUAD",
+      "site": "MP",
+      "identity_tiles": {
+        "tumor": 1,
+        "stroma": 3,
+        "normal lung": 6,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-77-8139": {
+      "rank": 2,
       "diagnosis": "TCGA-LUSC",
-      "site": "94",
+      "site": "77",
+      "identity_tiles": {
+        "tumor": 3,
+        "stroma": 5,
+        "normal lung": 2,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-78-7163": {
+      "rank": 2,
+      "diagnosis": "TCGA-LUAD",
+      "site": "78",
+      "identity_tiles": {
+        "tumor": 0,
+        "stroma": 1,
+        "normal lung": 8,
+        "immune cells": 0,
+        "necrosis": 1,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-78-7220": {
+      "rank": 2,
+      "diagnosis": "TCGA-LUAD",
+      "site": "78",
+      "identity_tiles": {
+        "tumor": 7,
+        "stroma": 0,
+        "normal lung": 3,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-90-7964": {
+      "rank": 2,
+      "diagnosis": "TCGA-LUSC",
+      "site": "90",
+      "identity_tiles": {
+        "tumor": 0,
+        "stroma": 2,
+        "normal lung": 8,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-37-A5EM": {
+      "rank": 3,
+      "diagnosis": "TCGA-LUSC",
+      "site": "37",
+      "identity_tiles": {
+        "tumor": 7,
+        "stroma": 3,
+        "normal lung": 0,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-43-6647": {
+      "rank": 3,
+      "diagnosis": "TCGA-LUSC",
+      "site": "43",
+      "identity_tiles": {
+        "tumor": 4,
+        "stroma": 1,
+        "normal lung": 5,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-49-6744": {
+      "rank": 3,
+      "diagnosis": "TCGA-LUAD",
+      "site": "49",
       "identity_tiles": {
         "tumor": 0,
         "stroma": 0,
@@ -242,14 +216,105 @@
         "blood / mucus": 0
       }
     },
-    "TCGA-MP-A4TD": {
-      "rank": 1,
+    "TCGA-53-7813": {
+      "rank": 3,
       "diagnosis": "TCGA-LUAD",
-      "site": "MP",
+      "site": "53",
       "identity_tiles": {
-        "tumor": 1,
-        "stroma": 4,
+        "tumor": 0,
+        "stroma": 0,
+        "normal lung": 10,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-67-3771": {
+      "rank": 3,
+      "diagnosis": "TCGA-LUAD",
+      "site": "67",
+      "identity_tiles": {
+        "tumor": 0,
+        "stroma": 6,
+        "normal lung": 4,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-05-4405": {
+      "rank": 4,
+      "diagnosis": "TCGA-LUAD",
+      "site": "05",
+      "identity_tiles": {
+        "tumor": 8,
+        "stroma": 1,
+        "normal lung": 1,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-51-4081": {
+      "rank": 4,
+      "diagnosis": "TCGA-LUSC",
+      "site": "51",
+      "identity_tiles": {
+        "tumor": 2,
+        "stroma": 0,
+        "normal lung": 8,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-69-7763": {
+      "rank": 4,
+      "diagnosis": "TCGA-LUAD",
+      "site": "69",
+      "identity_tiles": {
+        "tumor": 0,
+        "stroma": 1,
+        "normal lung": 9,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-77-6842": {
+      "rank": 4,
+      "diagnosis": "TCGA-LUSC",
+      "site": "77",
+      "identity_tiles": {
+        "tumor": 9,
+        "stroma": 0,
+        "normal lung": 1,
+        "immune cells": 0,
+        "necrosis": 0,
+        "blood / mucus": 0
+      }
+    },
+    "TCGA-95-7562": {
+      "rank": 4,
+      "diagnosis": "TCGA-LUAD",
+      "site": "95",
+      "identity_tiles": {
+        "tumor": 0,
+        "stroma": 0,
         "normal lung": 5,
+        "immune cells": 0,
+        "necrosis": 3,
+        "blood / mucus": 2
+      }
+    },
+    "TCGA-05-4396": {
+      "rank": 5,
+      "diagnosis": "TCGA-LUAD",
+      "site": "05",
+      "identity_tiles": {
+        "tumor": 9,
+        "stroma": 0,
+        "normal lung": 1,
         "immune cells": 0,
         "necrosis": 0,
         "blood / mucus": 0
