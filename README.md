@@ -1,3 +1,22 @@
+# Catch Me If You Scan: Tissue Fingerprints
+
+**Ashby Prize Hackathon 2026 · Team 40 · Saanvi Arora & Linda Huang**
+
+Hospitals share AI "embeddings" of tissue slides because a list of numbers seems anonymous.
+We tested that on 188 TCGA lung cancer patients with five pathology foundation models
+(CONCH, MUSK, PathGen-CLIP, QuiltNet, PLIP), run on NCSA Delta.
+
+**Key findings**
+- One slide's embedding finds the same patient's other slide (a different piece of tissue)
+  **5–8× more often than chance**, with no training; a trained attacker reaches 6–10×.
+- It holds within the same hospital and cancer type, and survives stain normalization.
+- Quick fixes fail: a secret key breaks with 10–30 known patients, noise ruins the data,
+  and removing 50 identity directions still leaves 2.5–5.5× chance.
+- Sharing only predictions or 10-patient averages brings re-identification close to chance.
+
+**Start here:** [STORY.md](STORY.md) (full results) · [ABSTRACT.md](ABSTRACT.md) ·
+demo app: `python 12_demo.py --bundle demo_bundle.npz`
+
 # Tissue Fingerprints: Delta code
 
 Code for every step of the plan, 1 through 11 (heatmaps and the scorecard included), plus two data checks (12, 13).
@@ -25,8 +44,7 @@ CONCH and MUSK use Saanvi's copies of the weights (`config.sh`).
 ```bash
 git clone git@github.com:Linda-888/team40-Ashby.git /work/nvme/bfqi/$USER/tissue-fingerprints/code
 ```
-
-The repo is private: clone with your own GitHub access. On `lhuang17`'s Delta account there are two
+ On `lhuang17`'s Delta account there are two
 deploy keys for this repo only: `~/.ssh/tf_deploy` (read-only, used for pulls) and `~/.ssh/tf_deploy_rw`
 (write, used only by `sync_results.sh` to push `results/`). Remove the write key in GitHub's
 Settings → Deploy keys when the hackathon is over.
